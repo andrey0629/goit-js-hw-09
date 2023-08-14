@@ -14,4 +14,36 @@
 // Для генерации случайного цвета используй функцию getRandomHexColor.
 
 function getRandomHexColor() {
-  return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, 0)}`;
+  return `#${Math.floor(Math.random() * 16777215)
+    .toString(16)
+    .padStart(6, 0)}`;
+}
+
+console.log(getRandomHexColor());
+
+const bodyEl = document.querySelector('body');
+const startBtn = document.querySelector('button[data-start]');
+const stopBtn = document.querySelector('button[data-stop]');
+let timerId = null;
+const LS_KEY = 'current body color is';
+
+startBtn.addEventListener('click', changeBGColor);
+stopBtn.addEventListener('click', stopColor);
+
+function changeBGColor() {
+  bodyEl.classList.add('bgcolor');
+  setTimeout(() => {
+    bodyEl.style.backgroundColor = getRandomHexColor();
+  }, 1000);
+  timerId = setInterval(() => {
+    bodyEl.style.backgroundColor = getRandomHexColor();
+  }, 1000);
+  startBtn.disabled = true;
+  stopBtn.disabled = false;
+}
+
+function stopColor() {
+  clearInterval(timerId);
+  startBtn.disabled = false;
+  stopBtn.disabled = true;
+}
