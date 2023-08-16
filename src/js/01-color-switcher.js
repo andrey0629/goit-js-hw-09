@@ -19,13 +19,10 @@ function getRandomHexColor() {
     .padStart(6, 0)}`;
 }
 
-console.log(getRandomHexColor());
-
 const bodyEl = document.querySelector('body');
 const startBtn = document.querySelector('button[data-start]');
 const stopBtn = document.querySelector('button[data-stop]');
 let timerId = null;
-const LS_KEY = 'current body color is';
 
 startBtn.addEventListener('click', changeBGColor);
 stopBtn.addEventListener('click', stopColor);

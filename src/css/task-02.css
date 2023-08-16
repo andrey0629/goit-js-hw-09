@@ -1,0 +1,23 @@
+/* <div class="timer"><div class="field"><span class="value" data-days>00</span><span class="label">Days</span></div> */
+
+.timer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin: 50px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column; 
+    text-align: center;
+}
+.value {
+    font-size: 30px;
+    color: red;
+}
+
+.label {
+    font-size: 20px;
+        color: blue;
+}
