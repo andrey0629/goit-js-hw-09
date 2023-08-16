@@ -116,6 +116,7 @@ const timerData = {
   hours: document.querySelector('[data-hours]'),
   minutes: document.querySelector('[data-minutes]'),
   seconds: document.querySelector('[data-seconds]'),
+  divTimer: document.querySelector('.timer'),
 };
 
 const startBtn = document.querySelector('[data-start]');
@@ -169,19 +170,30 @@ const options = {
           timer -= 1000;
           console.log(timer);
         }
+
+        // timerData.divTimer.textContent = `До Вашего события осталось:`;
         timerData.days.textContent = convertMs(timer).days;
-        timerData.hours.textContent = convertMs(timer).hours;
-        timerData.minutes.textContent = convertMs(timer).minutes;
-        timerData.seconds.textContent = convertMs(timer).seconds;
+        timerData.hours.textContent = formatTime(convertMs(timer).hours);
+        timerData.minutes.textContent = formatTime(convertMs(timer).minutes);
+        timerData.seconds.textContent = formatTime(convertMs(timer).seconds);
       }, 1000);
 
-      //   if (timer === 0) {
-      //     clearInterval(timerId);
-      //   }
+      //   ${formatTime(timerData.days.textContent)} " "
+      //   ${formatTime(timerData.hours.textContent)} " "
+      //   ${formatTime(timerData.minutes.textContent)} " "
+      //   ${formatTime(timerData.seconds.textContent)}`;
+
+      if (timer === 0) {
+        clearInterval(timerId);
+      }
 
       startBtn.disabled = true;
     }
   },
 };
+
+function formatTime(value) {
+  return value.toString().padStart(2, '0');
+}
 
 flatpickr('#datetime-picker', options);
