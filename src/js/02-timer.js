@@ -109,7 +109,9 @@
 // Для отображения уведомлений пользователю вместо window.alert() используй библиотеку notiflix.
 
 import flatpickr from 'flatpickr';
+import Notiflix from 'notiflix';
 import 'flatpickr/dist/flatpickr.min.css';
+import 'notiflix/dist/notiflix-3.2.6.min.css';
 
 const timerData = {
   days: document.querySelector('[data-days]'),
@@ -137,10 +139,12 @@ const options = {
     console.log(timer);
 
     if (timer < 0) {
-      window.alert('Please choose a date in the future!');
-      startBtn.disabled = false;
+      Notiflix.Notify.failure('Please choose a date in the future!');
+      //   window.alert('Please choose a date in the future!');
+      startBtn.disabled = true;
     } else {
       convertMs();
+      startBtn.disabled = false;
     }
 
     function convertMs(ms) {
@@ -173,15 +177,14 @@ const options = {
 
         // timerData.divTimer.textContent = `До Вашего события осталось:`;
         timerData.days.textContent = convertMs(timer).days;
-        timerData.hours.textContent = formatTime(convertMs(timer).hours);
-        timerData.minutes.textContent = formatTime(convertMs(timer).minutes);
-        timerData.seconds.textContent = formatTime(convertMs(timer).seconds);
+        timerData.hours.textContent = addLeadingZero(convertMs(timer).hours);
+        timerData.minutes.textContent = addLeadingZero(
+          convertMs(timer).minutes
+        );
+        timerData.seconds.textContent = addLeadingZero(
+          convertMs(timer).seconds
+        );
       }, 1000);
-
-      //   ${formatTime(timerData.days.textContent)} " "
-      //   ${formatTime(timerData.hours.textContent)} " "
-      //   ${formatTime(timerData.minutes.textContent)} " "
-      //   ${formatTime(timerData.seconds.textContent)}`;
 
       if (timer === 0) {
         clearInterval(timerId);
@@ -192,8 +195,46 @@ const options = {
   },
 };
 
-function formatTime(value) {
+function addLeadingZero(value) {
   return value.toString().padStart(2, '0');
 }
 
 flatpickr('#datetime-picker', options);
+
+// 1- Notify Module
+
+/*
+ * @param1 {string}: Required, a text in string format.
+ * @param2 {function | Object}: Optional, a callback function that will be called when the notification element has been clicked. Or, extending the initialize options with the new options for each notification element.
+ * @param3 {Object}: Optional, extending the initialize options with new the options for each notification element. (If the second parameter has been already used for a callback function.)
+ */
+
+// // e.g. Only message
+// Notiflix.Notify.success('Sol lucet omnibus');
+
+// Notiflix.Notify.failure('Please choose a date in the future!');
+
+// Notiflix.Notify.warning('Memento te hominem esse');
+
+// Notiflix.Notify.info('Cogito ergo sum');
+
+// // e.g. Message with a callback
+// Notiflix.Notify.success('Click Me', function cb() {
+//   // callback
+// });
+
+// // e.g. Message with the new options
+// Notiflix.Notify.success('Click Me', {
+//   timeout: 6000,
+// });
+
+// // e.g. Message with callback, and the new options
+// Notiflix.Notify.success(
+//   'Click Me',
+//   function cb() {
+//     // callback
+//   },
+//   {
+//     timeout: 4000,
+//   }
+// );
