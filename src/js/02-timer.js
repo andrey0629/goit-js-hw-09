@@ -121,7 +121,9 @@ const timerData = {
   divTimer: document.querySelector('.timer'),
 };
 
+let timerId = null;
 const startBtn = document.querySelector('[data-start]');
+let timerDedline = null;
 
 const options = {
   enableTime: true,
@@ -129,112 +131,57 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    // console.log(selectedDates[0]);
-
-    const ourTime = selectedDates[0];
-    console.log(ourTime);
-    const currentTime = new Date();
-    console.log(currentTime);
-    let timer = ourTime - currentTime;
-    console.log(timer);
-
-    if (timer < 0) {
+    if (selectedDates[0] < options.defaultDate) {
       Notiflix.Notify.failure('Please choose a date in the future!');
-      //   window.alert('Please choose a date in the future!');
-      startBtn.disabled = true;
-    } else {
-      convertMs();
-      startBtn.disabled = false;
-    }
-
-    function convertMs(ms) {
-      const second = 1000;
-      const minute = second * 60;
-      const hour = minute * 60;
-      const day = hour * 24;
-
-      const days = Math.floor(ms / day);
-      const hours = Math.floor((ms % day) / hour);
-      const minutes = Math.floor(((ms % day) % hour) / minute);
-      const seconds = Math.floor((((ms % day) % hour) % minute) / second);
-
-      return { days, hours, minutes, seconds };
-    }
-
-    startBtn.addEventListener('click', startTimer);
-
-    function startTimer() {
-      timerData.days.textContent = convertMs(timer).days;
-      timerData.hours.textContent = convertMs(timer).hours;
-      timerData.minutes.textContent = convertMs(timer).minutes;
-      timerData.seconds.textContent = convertMs(timer).seconds;
-
-      const timerId = setInterval(() => {
-        if (timer >= 1000) {
-          timer -= 1000;
-          console.log(timer);
-        }
-
-        // timerData.divTimer.textContent = `До Вашего события осталось:`;
-        timerData.days.textContent = convertMs(timer).days;
-        timerData.hours.textContent = addLeadingZero(convertMs(timer).hours);
-        timerData.minutes.textContent = addLeadingZero(
-          convertMs(timer).minutes
-        );
-        timerData.seconds.textContent = addLeadingZero(
-          convertMs(timer).seconds
-        );
-      }, 1000);
-
-      if (timer === 0) {
-        clearInterval(timerId);
-      }
-
       startBtn.disabled = true;
     }
+    timerDedline = selectedDates[0];
   },
 };
+
+function convertMs(ms) {
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
+
+  const days = Math.floor(ms / day);
+  const hours = Math.floor((ms % day) / hour);
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+
+  return { days, hours, minutes, seconds };
+}
+
+startBtn.addEventListener('click', startTimer);
+
+function startTimer() {
+  // timerData.days.textContent = days;
+  // timerData.hours.textContent = hours;
+  // timerData.minutes.textContent = minutes;
+  // timerData.seconds.textContent = seconds;
+
+  timerId = setInterval(() => {
+    const diff = timerDedline - Date.now();
+    if (diff <= 1000) {
+      clearInterval(timerId);
+      Notiflix.Notify.success('Congratulation!');
+      startBtn.disabled = false;
+    }
+    const { days, hours, minutes, seconds } = convertMs(diff);
+
+    // timerData.divTimer.textContent = `До Вашего события осталось:`;
+    timerData.days.textContent = addLeadingZero(days);
+    timerData.hours.textContent = addLeadingZero(hours);
+    timerData.minutes.textContent = addLeadingZero(minutes);
+    timerData.seconds.textContent = addLeadingZero(seconds);
+  }, 1000);
+
+  startBtn.disabled = true;
+}
 
 function addLeadingZero(value) {
   return value.toString().padStart(2, '0');
 }
 
 flatpickr('#datetime-picker', options);
-
-// 1- Notify Module
-
-/*
- * @param1 {string}: Required, a text in string format.
- * @param2 {function | Object}: Optional, a callback function that will be called when the notification element has been clicked. Or, extending the initialize options with the new options for each notification element.
- * @param3 {Object}: Optional, extending the initialize options with new the options for each notification element. (If the second parameter has been already used for a callback function.)
- */
-
-// // e.g. Only message
-// Notiflix.Notify.success('Sol lucet omnibus');
-
-// Notiflix.Notify.failure('Please choose a date in the future!');
-
-// Notiflix.Notify.warning('Memento te hominem esse');
-
-// Notiflix.Notify.info('Cogito ergo sum');
-
-// // e.g. Message with a callback
-// Notiflix.Notify.success('Click Me', function cb() {
-//   // callback
-// });
-
-// // e.g. Message with the new options
-// Notiflix.Notify.success('Click Me', {
-//   timeout: 6000,
-// });
-
-// // e.g. Message with callback, and the new options
-// Notiflix.Notify.success(
-//   'Click Me',
-//   function cb() {
-//     // callback
-//   },
-//   {
-//     timeout: 4000,
-//   }
-// );
